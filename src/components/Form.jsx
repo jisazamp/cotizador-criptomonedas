@@ -1,31 +1,18 @@
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
+
+import useSelectCurrency from '../hooks/useSelectCurrency';
+import { currencies } from '../data/currencies';
 
 const FormContainer = styled.form`
   margin-bottom: 4rem;
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  margin: 1em 0 1em 0;
-`;
-
-const Label = styled.label`
-  font-size: 1.5rem;
-  color: hsl(0, 0%, 100%);
-`;
-
-const Select = styled.select`
-  padding: 0.5rem 0.5rem;
-  border-radius: 0.5rem;
 `;
 
 const SubmitButton = styled.input`
   background-color: hsl(215, 51%, 40%);
   padding: 0.5em 1em;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 0.2rem;
   width: 100%;
   margin: 1rem 0;
   color: white;
@@ -43,29 +30,31 @@ const SubmitButton = styled.input`
 `;
 
 const Form = () => {
+  const [currency, SelectCurrency] = useSelectCurrency(
+    'Elige tu moneda',
+    currencies
+  );
+
+  const [crypto, SelectCrypto] = useSelectCurrency(
+    'Elige tu criptomoneda',
+    currencies
+  );
+
+  useEffect(() => {
+    fetchCryptos();
+  }, []);
+
+  const fetchCryptos = () => {
+    fetch(
+      'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=20&tsym=USD'
+    )
+      .then((res) => res.json())
+      .then((data) => console.log(data.Data));
+  };
+
   return (
     <FormContainer>
-      <FormGroup>
-        <Label htmlFor='currency'>Elige tu moneda</Label>
-        <Select name='currency'>
-          <option value='' defaultValue disabled hidden>
-            - Seleccione -
-          </option>
-          <option value='dos'>Dos</option>
-          <option value='tres'>Tres</option>
-        </Select>
-      </FormGroup>
-
-      <FormGroup>
-        <Label htmlFor='currency'>Elige tu criptomoneda</Label>
-        <Select name='currency'>
-          <option value='' defaultValue disabled hidden>
-            - Seleccione -
-          </option>
-          <option value='dos'>Dos</option>
-          <option value='tres'>Tres</option>
-        </Select>
-      </FormGroup>
+      <SelectCurrency />
 
       <SubmitButton type='submit' value='Cotizar' />
     </FormContainer>

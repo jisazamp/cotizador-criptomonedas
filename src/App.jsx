@@ -38,6 +38,27 @@ const Separator = styled.hr`
   margin: 1em auto;
 `;
 
+const Form = styled.form`
+  margin-bottom: 4rem;
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin: 1em 0 1em 0;
+`;
+
+const Label = styled.label`
+  font-size: 1.5rem;
+  color: hsl(0, 0%, 100%);
+`;
+
+const Select = styled.select`
+  padding: 0.5rem 0.5rem;
+  border-radius: 0.5rem;
+`;
+
 const App = () => {
   return (
     <Container>
@@ -45,6 +66,30 @@ const App = () => {
       <div>
         <Header>Cotiza Criptomonedas al Instante</Header>
         <Separator />
+
+        <Form>
+          <FormGroup>
+            <Label htmlFor='currency'>Elige tu moneda</Label>
+            <Select name='currency'>
+              <option value='' defaultValue disabled hidden>
+                - Seleccione -
+              </option>
+              <option value='dos'>Dos</option>
+              <option value='tres'>Tres</option>
+            </Select>
+          </FormGroup>
+
+          <FormGroup>
+            <Label htmlFor='currency'>Elige tu criptomoneda</Label>
+            <Select name='currency'>
+              <option value='' defaultValue disabled hidden>
+                - Seleccione -
+              </option>
+              <option value='dos'>Dos</option>
+              <option value='tres'>Tres</option>
+            </Select>
+          </FormGroup>
+        </Form>
       </div>
     </Container>
   );

@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
+import PropTypes from 'prop-types';
 
 import useSelectCurrency from '../hooks/useSelectCurrency';
 import { currencies } from '../data/currencies';
+import Error from './Error';
 
 const FormContainer = styled.form`
-  margin-bottom: 4rem;
+  margin-bottom: 1rem;
 `;
 
 const SubmitButton = styled.input`
@@ -29,7 +31,10 @@ const SubmitButton = styled.input`
   }
 `;
 
-const Form = () => {
+const Form = ({ setCurrencies }) => {
+  const [topCryptos, setTopCryptos] = useState([]);
+  const [error, setError] = useState(false);
+
   const [currency, SelectCurrency] = useSelectCurrency(
     'Elige tu moneda',
     currencies
@@ -37,28 +42,51 @@ const Form = () => {
 
   const [crypto, SelectCrypto] = useSelectCurrency(
     'Elige tu criptomoneda',
-    currencies
+    topCryptos
   );
 
   useEffect(() => {
+    const fetchCryptos = async () => {
+      const response = await fetch(
+        'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD'
+      );
+      const data = await response.json();
+
+      // Structure the array in the way we need it
+      const cryptosData = data.Data.map((crypto) => {
+        return { id: crypto.CoinInfo.Name, name: crypto.CoinInfo.FullName };
+      });
+      setTopCryptos(cryptosData);
+    };
+
     fetchCryptos();
   }, []);
 
-  const fetchCryptos = () => {
-    fetch(
-      'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=20&tsym=USD'
-    )
-      .then((res) => res.json())
-      .then((data) => console.log(data.Data));
+  const handleCryptoSubmit = (e) => {
+    e.preventDefault();
+
+    if (!currency || !crypto) {
+      setError(true);
+      return;
+    }
+
+    setCurrencies({ currency, crypto });
+    setError(false);
   };
 
   return (
-    <FormContainer>
+    <FormContainer onSubmit={handleCryptoSubmit}>
+      {error && <Error>Todos los campos son obligatorios</Error>}
       <SelectCurrency />
+      <SelectCrypto />
 
       <SubmitButton type='submit' value='Cotizar' />
     </FormContainer>
   );
+};
+
+Form.propTypes = {
+  setCurrencies: PropTypes.func.isRequired,
 };
 
 export default Form;

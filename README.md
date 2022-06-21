@@ -22,7 +22,7 @@ Users should be able to:
 
 ### Screenshot
 
-![Crypto Preview](./screenshot.jpg)
+![Crypto Preview](./screenshot.png)
 
 ### Links
 
